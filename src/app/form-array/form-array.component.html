@@ -1,0 +1,135 @@
+<div class="container">
+    <div class="card mt-5 p-3 round shadow">
+        <div class="row d-flex">
+
+            <div class="col-12">
+                <h1 class="p-2 text-center">
+                    Exemplo de uso FormArray
+                </h1>
+            </div>
+
+            <div class="col-12 text-center">
+                <h5>Simulação de formulários de investimentos</h5>
+            </div>
+
+        </div>
+
+        <form [formGroup]="formInvestimento" (submit)="onSubmit()">
+            <div class="row d-flex justify-content-center mt-3">
+                <div class="col-10">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Ação</th>
+                                <th scope="col">Cotação Atual</th>
+                                <th scope="col">Quantidade</th>
+                                <th scope="col" class="col-3">Resgate número de ações</th>
+                            </tr>
+                        </thead>
+
+                        <tbody formArrayName="investimentos">
+
+                            <tr *ngFor="let item of formArray()?.controls; let i = index" [formGroupName]="i">
+                                <td>{{item.value.id}}</td>
+                                <td>{{item.value.acao}}</td>
+                                <td>{{item.value.cotacaoAtual}}</td>
+                                <td>{{item.value.quantidade}}</td>
+                                <td>
+                                    <div class="form-group">
+                                        <input type="text" class="form-control"
+                                            [ngClass]="{'error' : (errorsItemFormArray(i) && item.touched )}"
+                                            [ngClass]="{'valid' : (!errorsItemFormArray(i) && item.touched && !!item.value.valorSaque)}"
+                                            formControlName="valorSaque" />
+
+                                        <div class="text-danger" *ngIf="errorsItemFormArray(i) && item.touched">
+                                            <ul class="errors">
+                                                <li *ngIf="errorsItemFormArray(i)?.loteInvalido">A quantidade de saque
+                                                    deve ser multipla de 100.</li>
+                                                <li *ngIf="errorsItemFormArray(i)?.max">O lote máximo permitido é de
+                                                    {{item.value.quantidade}} ações.</li>
+                                                <li *ngIf="errorsItemFormArray(i)?.min">O lote mínimo permitido é de 100
+                                                    ações.</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+
+            <div class="row d-flex justify-content-end mt-3">
+                <div class="col-2">
+                    <button class="button btn btn-primary" type="submit" [disabled]="saquePronto()" data-bs-toggle="modal" data-bs-target="#modalSaque">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                            class="bi bi-graph-up-arrow" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd"
+                                d="M0 0h1v15h15v1H0V0Zm10 3.5a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-1 0V4.9l-3.613 4.417a.5.5 0 0 1-.74.037L7.06 6.767l-3.656 5.027a.5.5 0 0 1-.808-.588l4-5.5a.5.5 0 0 1 .758-.06l2.609 2.61L13.445 4H10.5a.5.5 0 0 1-.5-.5Z" />
+                        </svg>
+                        Resgatar
+                    </button>
+                </div>
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+
+
+
+<!-- Modal -->
+<div class="modal  fade" id="modalSaque" tabindex="-1" aria-labelledby="saqueModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <!-- header somente para form inválido -->
+        <div class="modal-header align-self-center border-0">
+            <h3 class="modal-title" id="staticBackdropLabel">Resgate agendado com sucesso</h3>
+        </div>
+
+        <!-- Modal em caso de válido -->
+        <div class="modal-body align-self-center">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Ação</th>
+                        <th scope="col">Cotação Atual</th>
+                        <th scope="col">Quantidade</th>
+                        <th scope="col">Valor</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of preparaSaque().itens">
+                        <td>{{item.acao}}</td>
+                        <td>{{item.cotacaoAtual}}</td>
+                        <td>{{item.qntSaque}}</td>
+                        <td>{{item.valor}}</td>
+                    </tr>
+                </tbody>
+
+                <tfoot>
+                    <tr>
+                        <td colspan="4" class="text-end">Valor Total R$ {{preparaSaque().valorTotal}}</td>
+                    </tr>
+                </tfoot>
+                
+
+            </table>
+                
+            
+        </div>
+        
+        <div class="modal-footer border-0 align-self-center">
+          <button   type="button" class="btn btn-primary" data-bs-dismiss="modal">Corrigir</button>
+          <a routerLink="/investimentos" data-bs-dismiss="modal" type="button" class="btn btn-primary">Novo Resgate</a>
+        </div>
+      </div>
+    </div>
+</div>
