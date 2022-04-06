@@ -22,13 +22,13 @@ export class FormArrayComponent implements OnInit {
       quantidade:35200
     },
     {
-      id:1,
+      id:3,
       acao:'VALE3',
       cotacaoAtual:79.90,
       quantidade:15000
     },
     {
-      id:1,
+      id:4,
       acao:'BBDC4',
       cotacaoAtual:29.90,
       quantidade:25000
@@ -37,27 +37,34 @@ export class FormArrayComponent implements OnInit {
   ]
 
 
-  public formInvestimento:FormGroup | any = null;
+  public formInvestimento:FormGroup;
+  public formNovoInvestimento:FormGroup;
 
 
   constructor(private fb:FormBuilder) { 
 
-
+    this.formInvestimento     = this.buildFormAcoes();
+    this.formNovoInvestimento = this.buildFormNovoInvestimento();
 
   }
 
   ngOnInit(): void {
-    this.buildFormAcoes();
     this.popularForArray();
   }
 
 
-  buildFormAcoes():void{
-
-    this.formInvestimento = new FormGroup({
+  buildFormAcoes():FormGroup{
+    return this.fb.group({
       investimentos: this.fb.array([])
-    })
+    });
+  }
 
+
+  buildFormNovoInvestimento():FormGroup{
+    return this.fb.group({
+      nomeAcao: [null, [Validators.required]],
+      quantidade:[null, Validators.required]
+    });
   }
 
   popularForArray():void{
@@ -83,9 +90,6 @@ export class FormArrayComponent implements OnInit {
     return(control:AbstractControl): ValidationErrors | null =>{
 
       const value = Number(control.value);
-
-  
-      // console.log(this.formInvestimento);
 
       //se der bom vai retornar um json com o campo saque válido 
       if((value%100) !== 0){
@@ -173,5 +177,31 @@ export class FormArrayComponent implements OnInit {
   }
 
 
+
+  onSalvarNovoInvesimento():void{
+    
+    //gerando um id dinamic entre 1 e 100
+    const id = Math.floor(Math.random() * 100) + 1;
+    // gerando cotação dinamica
+    const cotacao = Math.random() * 100;
+
+    const values = this.formNovoInvestimento.value;
+
+    //criar um form group novo e add no formArray
+    const item:FormGroup = this.fb.group({
+      id: id,
+      acao: values.nomeAcao,
+      cotacaoAtual:cotacao,
+      quantidade: values.quantidade,
+      valorSaque: [null,  [ Validators.min(100), Validators.max(values.quantidade), this.validarLoteResgate()]],
+    });
+
+    //recuprar o formArray e add o elemento nele
+    const formArray = this.formArray();
+    formArray.push(item);
+
+    this.formNovoInvestimento.reset();
+
+  }
 
 }
