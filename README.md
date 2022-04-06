@@ -1,4 +1,4 @@
-# FormArray
+# A simple example of a Reactive Form in Angular using FormArray and Custom Validator
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 12.2.1.
 
