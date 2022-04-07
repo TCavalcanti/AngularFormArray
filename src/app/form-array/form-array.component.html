@@ -33,7 +33,7 @@
                             <tr *ngFor="let item of formArray()?.controls; let i = index" [formGroupName]="i">
                                 <td>{{item.value.id}}</td>
                                 <td>{{item.value.acao}}</td>
-                                <td>{{item.value.cotacaoAtual}}</td>
+                                <td>{{item.value.cotacaoAtual | moedaBrasileira:'brl':2}}</td>
                                 <td>{{item.value.quantidade}}</td>
                                 <td>
                                     <div class="form-group">
@@ -124,15 +124,15 @@
                     <tbody>
                         <tr *ngFor="let item of preparaSaque().itens">
                             <td>{{item.acao}}</td>
-                            <td>{{item.cotacaoAtual}}</td>
+                            <td>{{item.cotacaoAtual | moedaBrasileira:'brl':2}}</td>
                             <td>{{item.qntSaque}}</td>
-                            <td>{{item.valor}}</td>
+                            <td>{{item.valor | moedaBrasileira:'brl':2}}</td>
                         </tr>
                     </tbody>
 
                     <tfoot>
                         <tr>
-                            <td colspan="4" class="text-end">Valor Total R$ {{preparaSaque().valorTotal}}</td>
+                            <td colspan="4" class="text-end">Valor Total {{preparaSaque().valorTotal | moedaBrasileira:'brl':2}}</td>
                         </tr>
                     </tfoot>
 
